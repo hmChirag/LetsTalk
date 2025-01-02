@@ -41,3 +41,25 @@
 .conferenceView{
   display: flex;
 }
+
+
+.chatRoom{
+  position: absolute;
+  height: 90vh;
+  right: 0;
+  background-color: white;
+  border-radius: 10px;
+  bottom: 10vh;
+  width: 25vw;
+  padding: 20px;
+}
+
+.chatContainer{
+  position: relative;
+  height: 100%;
+}
+
+.chatArea{
+  position: absolute;
+  bottom: 0;
+}

@@ -41,7 +41,7 @@ export default function VideoMeetComponent() {
     let [videos,setVideos]=useState([]);
     let [screen ,setScreen]=useState();
     
-    let [showModel ,setModel]=useState();
+    let [showModel ,setModel]=useState(true);
 
     let [screenAvailable,setScreenAvailable]=useState();
 
@@ -239,9 +239,6 @@ export default function VideoMeetComponent() {
       }
     },[audio,video])
 
-    const addMessage=()=>{
-
-    }
 
 
     //   let gotMessageFromServer=(fromId,message)=>{
@@ -328,7 +325,9 @@ export default function VideoMeetComponent() {
     };
     
 
+    let addMessage =(data,sender,socketIdSender)=>{
 
+    }
 
     
     let connectToSocketServer=()=>{
@@ -535,13 +534,18 @@ export default function VideoMeetComponent() {
       setScreen(!screen);
     }
 
+    let sendMessage =()=>{
+      socketRef.current.emit("chat-message", message ,username);
+      setMessage("");
+    }
+
   return (
     <div>
       {askForUserName === true ?
             <div>
               <h2>enter into the lobby</h2>
               <TextField id="outlined-basic" label="UserName" value={username} onChange={e=> setUserName(e.target.value)} variant="outlined" />
-              {/* <TextField id="filled-basic" label="Filled" variant="filled" /> */}
+              {/* <TextField id="outlined-basicc" label="UserName" variant="outlined" /> */}
               
               <Button variant="contained" id="button-connect" onClick={connect}>Connect</Button>
             
@@ -553,9 +557,21 @@ export default function VideoMeetComponent() {
 
             <div className='meetVideoContainer'> 
 
+
+              {showModel ? <div className="chatRoom">
+                  <div className='chatContainer'>
+                    <h2 style={{color:"black",textAlign:"center"}}>Chat section</h2>
+                    
+                    <div className="chatArea">
+                      <TextField value={message} onChange={ (e) => setMessage(e.target.value)} id="outlined-basicc" label="Enter your message" variant="outlined" />
+                      <Button variant='contained' onClick={sendMessage}>Send</Button>
+                    </div>
+                  </div>
+                </div> : <></>}
+              
+
               <div className='buttonContainers'>
 
-                
                 <IconButton onClick={handleVideo}>
                   {(video === true) ? <VideocamIcon /> : <VideocamOffIcon />}
                 </IconButton>
@@ -566,16 +582,14 @@ export default function VideoMeetComponent() {
                   {(audio === true) ? <MicIcon /> : <MicOffIcon />}
                 </IconButton>
 
-
                 {screenAvailable === true ?
                   <IconButton onClick={handleScreen}>
                     {screen === true ? <ScreenShareIcon /> : <StopScreenShareIcon />}
                   </IconButton> : <></>}
-                
-
+              
 
                 <Badge badgeContent={newMessage} max={999} color='secondary'>
-                  <IconButton style={{color:"white"}}>
+                  <IconButton onClick={()=>setModel(!showModel)} style={{color:"white"}}>
                     <ChatIcon/>
                   </IconButton>
                 </Badge>
