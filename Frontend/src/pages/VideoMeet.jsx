@@ -48,7 +48,7 @@ export default function VideoMeetComponent() {
     let [message,setMessage]=useState("");
     let [messages,setMessages]=useState([]);
 
-    let[newMessage,setNewMessage]=useState(4);
+    let[newMessage,setNewMessage]=useState(1);
 
     let[username,setUserName]=useState("");
     let[askForUserName,setAskForUserName]=useState(true);
@@ -325,9 +325,15 @@ export default function VideoMeetComponent() {
     };
     
 
-    let addMessage =(data,sender,socketIdSender)=>{
-
-    }
+    const addMessage = (data, sender, socketIdSender) => {
+      setMessages((prevMessages) => [
+          ...prevMessages,
+          { sender: sender, data: data }
+      ]);
+      if (socketIdSender !== socketIdRef.current) {
+        setNewMessage((prevNewMessages) => prevNewMessages + 1);
+      }
+  };
 
     
     let connectToSocketServer=()=>{
@@ -543,11 +549,11 @@ export default function VideoMeetComponent() {
     <div>
       {askForUserName === true ?
             <div>
-              <h2>enter into the lobby</h2>
-              <TextField id="outlined-basic" label="UserName" value={username} onChange={e=> setUserName(e.target.value)} variant="outlined" />
+              <h2 style={{textAlign:"center" , marginTop:"50px"}}>Enter the meeting using your user name below : </h2>
+              <TextField style={{margin:"10px",marginLeft:"140px"}} id="outlined-basic" label="UserName" value={username} onChange={e=> setUserName(e.target.value)} variant="outlined" />
               {/* <TextField id="outlined-basicc" label="UserName" variant="outlined" /> */}
               
-              <Button variant="contained" id="button-connect" onClick={connect}>Connect</Button>
+              <Button style={{margin: "20px"}} variant="contained" id="button-connect" onClick={connect}>Connect</Button>
             
               <div>
                 <video ref={localVideoRef} autoPlay muted></video>
@@ -558,13 +564,29 @@ export default function VideoMeetComponent() {
             <div className='meetVideoContainer'> 
 
 
-              {showModel ? <div className="chatRoom">
+              {showModel ? 
+               <div className="chatRoom">
                   <div className='chatContainer'>
                     <h2 style={{color:"black",textAlign:"center"}}>Chat section</h2>
                     
+                    <div className="chattingDisplay">
+                      {messages.length !== 0 ? messages.map((item, index) => {
+                      // console.log(messages)
+                      return (
+                          <div style={{ marginBottom: "20px" }} key={index}>
+                              <p style={{ fontWeight: "bold",color:"black" }}>{item.sender}</p>
+                              <p style={{color:"black"}}>{item.data}</p>
+                          </div>
+                      )
+                      }) : <p>No Messages Yet</p>}
+                    </div>
+
+
+
+
                     <div className="chatArea">
                       <TextField value={message} onChange={ (e) => setMessage(e.target.value)} id="outlined-basicc" label="Enter your message" variant="outlined" />
-                      <Button variant='contained' onClick={sendMessage}>Send</Button>
+                      <Button style={{margin:"10px"}} variant='contained' onClick={sendMessage}>Send</Button>
                     </div>
                   </div>
                 </div> : <></>}

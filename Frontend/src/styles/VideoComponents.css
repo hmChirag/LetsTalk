@@ -1,27 +1,20 @@
-*{
-    margin: 0;
-    padding: 0;
-    /* box-sizing: border-box; */
-    /* background-color: black; */
-    color: white;
-  }
-  
- #outlined-basic{
+* {
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+#outlined-basic {
   background-color: rgb(203, 218, 219);
   color: rgb(71, 66, 66);
- }
+}
 
-#button-connect{
-  background-color:rgb(203, 218, 219);
+#button-connect {
+  background-color: rgb(203, 218, 219);
   color: rgb(24, 23, 23);
 }
 
-/* .meetVideoContainer{
-  position: relative;
-  height: 100vh;
-} */
-
-.meetUserVideo{
+.meetUserVideo {
   position: absolute;
   bottom: 10vh;
   height: 30vh;
@@ -30,36 +23,54 @@
   border-radius: 15px;
 }
 
-.buttonContainers{
+.buttonContainers {
   position: absolute;
   width: 100vw;
   bottom: 0;
   text-align: center;
-
+  left: 0;
 }
 
-.conferenceView{
+.conferenceView {
   display: flex;
 }
 
-
-.chatRoom{
+.chatRoom {
+  margin-right: 45px;
   position: absolute;
-  height: 90vh;
+  height: 75vh;
   right: 0;
   background-color: white;
   border-radius: 10px;
   bottom: 10vh;
   width: 25vw;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-.chatContainer{
+.chatContainer {
   position: relative;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.chatArea{
+.chattingDisplay {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 65px;
+}
+
+.chatArea {
   position: absolute;
   bottom: 0;
+  width: 100%;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.meetUserVideo {
+  margin-left: 20px;
 }
