@@ -15,3 +15,29 @@
   background-color:rgb(203, 218, 219);
   color: rgb(24, 23, 23);
 }
+
+/* .meetVideoContainer{
+  position: relative;
+  height: 100vh;
+} */
+
+.meetUserVideo{
+  position: absolute;
+  bottom: 10vh;
+  height: 30vh;
+  width: auto;
+  left: 0;
+  border-radius: 15px;
+}
+
+.buttonContainers{
+  position: absolute;
+  width: 100vw;
+  bottom: 0;
+  text-align: center;
+
+}
+
+.conferenceView{
+  display: flex;
+}
