@@ -50,7 +50,7 @@ function HomeComponent() {
 
 
           <div className='rightPanel' style={{display:"flex",alignItems:"center"}}>
-              <img srcSet='/public/call.png' style={{width:"30vw",height:"auto",borderRadius:"20px"}}></img>
+              <img srcSet='/call.png' style={{width:"30vw",height:"auto",borderRadius:"20px"}}></img>
           </div>
         </div>
 
