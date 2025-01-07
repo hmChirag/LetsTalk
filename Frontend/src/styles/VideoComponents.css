@@ -59,7 +59,7 @@
 .chattingDisplay {
   flex-grow: 1;
   overflow-y: auto;
-  margin-bottom: 65px;
+  margin-bottom: 70px;
 }
 
 .chatArea {
