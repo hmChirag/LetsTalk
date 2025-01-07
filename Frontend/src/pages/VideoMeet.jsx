@@ -48,7 +48,7 @@ export default function VideoMeetComponent() {
     let [message,setMessage]=useState("");
     let [messages,setMessages]=useState([]);
 
-    let[newMessage,setNewMessage]=useState(1);
+    let[newMessage,setNewMessage]=useState(0);
 
     let[username,setUserName]=useState("");
     let[askForUserName,setAskForUserName]=useState(true);
@@ -212,11 +212,7 @@ export default function VideoMeetComponent() {
     let getUserMedia=()=>{
       if((video && videoAvailable) || (audio && audioAvaialable)){
         navigator.mediaDevices.getUserMedia({video: video, audio: audio})
-        // .then(()=>{})
-        // .then((stream)={})
-        // .catch((e)=>console.log(e))
         .then((stream) => {
-          // Handle the stream here
           window.localStream = stream;
           localVideoRef.current.srcObject = stream;
         })
@@ -238,33 +234,6 @@ export default function VideoMeetComponent() {
           getUserMedia();
       }
     },[audio,video])
-
-
-
-    //   let gotMessageFromServer=(fromId,message)=>{
-    //   var signal=JSON.parse(message);
-
-    //   if(fromId !== socketIdRef.current){
-        
-    //     if(signal.sdp){
-    //       connections[fromId].setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(()=>{
-            
-    //         if(signal.sdp.type === 'offer'){
-    //           connections[fromId].createAnswer().then((description)=>{
-    //             connections[fromId].setLocalDescription(description).then(()=>{
-
-    //               //sending the signal that the signal is recieved and nowwe can talk to our stun server
-    //               socketIdRef.current.emit("signal",fromId,JSON.stringify({"sdp":connections[fromId].localDescription}))
-    //             }).catch(e=>console.log(e));
-    //           }).catch(e=>console.log(e))
-    //         }
-    //       }).catch(e=>console.log(e))
-    //     }
-    //     if(signal.ice){
-    //       connections[fromId].addIceCandidate(new RTCIceCandidate(signal.ice)).then(()=>{}).catch(e=>console.log(e))
-    //     }
-    //   }
-    // }
 
 
     let pendingICECandidates = {};
@@ -348,64 +317,53 @@ export default function VideoMeetComponent() {
         socketRef.current.on("chat-message",addMessage)
         
         socketRef.current.on("user-left",(id)=>{
-          setVideo((videos)=>videos.filter((video)=>video.socketId !== id))
+          setVideos((videos)=>videos.filter((video)=>video.socketId !== id))
         })
         
         socketRef.current.on("user-joined",(id,clients)=>{
           clients.forEach((socketListId)=>{
             //RTCPeerConnection is used to establish one to one connection between two people
             connections[socketListId]=new RTCPeerConnection(peerConfigConnections)
+
             connections[socketListId].onicecandidate=(event)=>{
               if(event.candidate !== null ){
                 socketRef.current.emit("signal",socketListId,JSON.stringify({'ice':event.candidate}))
               }
             }
 
-            connections[socketListId].onaddstream=(event)=>{
-               
-              let videoExists= videoRef.current.find(video=> video.socketId === socketListId);
-              if(videoExists){
-                setVideo(videos=>{
-                  const updatedVideos =videos.map(videos=>
-                    video.socketId === socketListId ? {...video,stream: event.stream} : video
-                  );
-                  videoRef.current =updatedVideos;
-                  return updatedVideos;
-                })
-              }else{
+            // Wait for their video stream
+            connections[socketListId].onaddstream = (event) => {
 
-                let newVideo = {
-                  socketId: socketListId,
-                  stream:event.stream,
-                  autoPlay:true,
-                  playinline:true
-                }
+              let videoExists = videoRef.current.find(video => video.socketId === socketListId);
 
-                setVideos(videos=>{ //here (...) the spread operator is used in otder to spread the elements from the array 
-                  const updatedVideos=[...videos,newVideo];
-                  videoRef.current =updatedVideos;
-                  return updatedVideos;
-                });
+              if (videoExists) {
+                  console.log("FOUND EXISTING");
+
+                  // Update the stream of the existing video
+                  setVideos(videos => {
+                      const updatedVideos = videos.map(video =>
+                          video.socketId === socketListId ? { ...video, stream: event.stream } : video
+                      );
+                      videoRef.current = updatedVideos;
+                      return updatedVideos;
+                  });
+              } else {
+                  // Create a new video
+                  console.log("CREATING NEW");
+                  let newVideo = {
+                      socketId: socketListId,
+                      stream: event.stream,
+                      autoplay: true,
+                      playsinline: true
+                  };
+
+                  setVideos(videos => {
+                      const updatedVideos = [...videos, newVideo];
+                      videoRef.current = updatedVideos;
+                      return updatedVideos;
+                  });
               }
-            };
-
-            // connections[socketListId].onaddstream = (event) => {
-            //   const existingVideo = videoRef.current.find(video => video.socketId === socketListId);
-              
-            //   if (!existingVideo) {
-            //     const newVideo = {
-            //       socketId: socketListId,
-            //       stream: event.stream,
-            //       autoPlay: true,
-            //       playinline: true,
-            //     };
-            //     setVideos((prevVideos) => {
-            //       const updatedVideos = [...prevVideos,  newVideo];
-            //       videoRef.current = updatedVideos;
-            //       return updatedVideos;
-            //     });
-            //   }
-            // };
+          };
             
 
 
@@ -417,7 +375,7 @@ export default function VideoMeetComponent() {
               window.localStream =blackSilence();
               connections[socketListId].addStream(window.localStream);
             }
-          })
+        })
 
 
 
@@ -440,7 +398,7 @@ export default function VideoMeetComponent() {
                 connections[id2].setLocalDescription(description)
                 .then(()=>{                                    //sdp stands for session description
                   socketRef.current.emit("signal",id2,JSON.stringify({"sdp":connections[id2].setLocalDescription}))
-                })                                       //here the setLocalDescription use very crucial for establishing the handshake between the two peers which finally leads to the connection establishment 
+                })                                    //here the setLocalDescription use very crucial for establishing the handshake between the two peers which finally leads to the connection establishment 
                 .catch(e=>console.log(e));
               })
             }
@@ -540,6 +498,14 @@ export default function VideoMeetComponent() {
       setScreen(!screen);
     }
 
+    let handleEndCall = () => {
+      try {
+          let tracks = localVideoref.current.srcObject.getTracks()
+          tracks.forEach(track => track.stop())
+      } catch (e) { }
+      window.location.href = "/home"
+  }
+
     let sendMessage =()=>{
       socketRef.current.emit("chat-message", message ,username);
       setMessage("");
@@ -597,7 +563,7 @@ export default function VideoMeetComponent() {
                 <IconButton onClick={handleVideo}>
                   {(video === true) ? <VideocamIcon /> : <VideocamOffIcon />}
                 </IconButton>
-                <IconButton style={{color:"red"}}>
+                <IconButton onClick={handleEndCall} style={{color:"red"}}>
                   <CallEndIcon/>
                 </IconButton>
                 <IconButton onClick={handleAudio}>
@@ -619,24 +585,27 @@ export default function VideoMeetComponent() {
  
               <video className='meetUserVideo' ref={localVideoRef} autoPlay muted></video>
           
-
-              {videos.map((video) => (
-                <div className="conferenceView" key={video.socketId}>
-                  <h2>{video.socketId}</h2>
-                  <video
-                    data-socket={video.socketId}
-                    ref={(ref) => {
-                      if (ref && video.stream) {
-                        ref.srcObject = video.stream;
-                        ref.play().catch((err) => console.error("Video play failed:", err));
-                      }
-                    }}
-                    autoPlay
-                    muted
-                  ></video>      
-                </div>
-              ))}
-
+              {videos.length !== 0 ? (
+                videos.map((video) => (
+                  <div className="conferenceView" key={video.socketId}>
+                    <h2>{video.socketId}</h2>
+                    <video
+                      data-socket={video.socketId}
+                      ref={(ref) => {
+                        if (ref && video.stream) {
+                          ref.srcObject = video.stream;
+                          ref.play().catch((err) => console.error("Video play failed:", err));
+                        }
+                      }}
+                      autoPlay
+                      muted
+                      playsInline
+                    ></video>
+                  </div>
+                ))
+              ) : (
+                <p>No Users Online</p>
+              )}
 
             </div>
     }
