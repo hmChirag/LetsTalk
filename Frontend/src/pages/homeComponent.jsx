@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import withAuth from '../utils/withAuth';
 import "../styles/VideoComponents.css"
 import { useNavigate } from 'react-router-dom';
 import { Button, IconButton, TextField } from '@mui/material';
-import RestoreIcon from '@mui/icons-material/Restore';
+// import RestoreIcon from '@mui/icons-material/Restore';
+import { AuthContext } from '../contexts/AuthContext';
 
 function HomeComponent() {
 
   let navigate = useNavigate();
   const [meetingCode,setMeetingCode] = useState();
+
+  const {addToUserHistory} = useContext(AuthContext);
   let handleJoinVideoCall= async ()=>{
+
+    await addToUserHistory(meetingCode)
     navigate(`/${meetingCode}`)
   }
 
@@ -22,10 +27,12 @@ function HomeComponent() {
               Apna video call
             </h2>
             <div style={{margin:"10px",marginRight:"30px"}}>
-              <IconButton style={{marginRight:"20px"}}>
+              {/* <IconButton style={{marginRight:"20px"}} onClick={()=>{
+                navigate("/history");
+              }}>
                 <RestoreIcon></RestoreIcon>
                 <p>History</p>
-              </IconButton>
+              </IconButton> */}
 
               <Button variant='contained'  onClick={()=>{
                 localStorage.removeItem("token");

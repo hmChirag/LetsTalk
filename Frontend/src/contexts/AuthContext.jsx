@@ -46,7 +46,36 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const data = { userdata, setUserData, handleRegister, handleLogin };
+
+    const getHistoryOfUser = async ()=>{
+        try{
+            let request=await client.get("/get_all_activity",{
+                params:{
+                    token:localStorage.getItem("token")
+                }
+            });
+            return request.data;
+        }catch(e){
+            throw e;
+        }
+    }
+
+    const addToUserHistory = async (meetingCode)=>{
+        try{
+            let request=await client.post("/add_to_activity",{
+                params:{
+                    token:localStorage.getItem("token"),
+                    meeting_code: meetingCode
+                }
+            });
+            return request;
+        }catch(e){
+            throw e;
+        }
+    }
+
+
+    const data = { userdata, setUserData, getHistoryOfUser, addToUserHistory, handleRegister, handleLogin };
 
     return (
         <AuthContext.Provider value={data}>
