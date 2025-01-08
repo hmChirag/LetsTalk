@@ -41,7 +41,7 @@
 ### Steps to Run Locally:
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/lets-talk.git
+   git clone https://github.com/hmChirag/LetsTalk
    cd lets-talk
    ```
 2. **Install dependencies:**
