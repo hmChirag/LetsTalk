@@ -1,10 +1,11 @@
 import React from 'react'
 import "../App.css"
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 export default function LandingPage() {
   return (
-    <>
+    <> 
       <div className='LandingPageContainer'>
         
         <nav>
@@ -14,7 +15,9 @@ export default function LandingPage() {
             </h2>
           </div>
           <div className='navlist'>
-            <p>Join as guest</p>
+            <p onClick={()=>{
+              window.location.href="/acdsd";
+            }}>Join as guest</p>
             <p>Register</p>
             <button>Login</button>
           </div>

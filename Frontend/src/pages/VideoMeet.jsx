@@ -397,7 +397,7 @@ export default function VideoMeetComponent() {
               connections[id2].createOffer().then((description)=>{
                 connections[id2].setLocalDescription(description)
                 .then(()=>{                                    //sdp stands for session description
-                  socketRef.current.emit("signal",id2,JSON.stringify({"sdp":connections[id2].setLocalDescription}))
+                  socketRef.current.emit("signal", id2, JSON.stringify({ "sdp": connections[id2].localDescription }));
                 })                                    //here the setLocalDescription use very crucial for establishing the handshake between the two peers which finally leads to the connection establishment 
                 .catch(e=>console.log(e));
               })
@@ -584,28 +584,31 @@ export default function VideoMeetComponent() {
               </div>  
  
               <video className='meetUserVideo' ref={localVideoRef} autoPlay muted></video>
-          
-              {videos.length !== 0 ? (
-                videos.map((video) => (
-                  <div className="conferenceView" key={video.socketId}>
-                    <h2>{video.socketId}</h2>
-                    <video
-                      data-socket={video.socketId}
-                      ref={(ref) => {
-                        if (ref && video.stream) {
-                          ref.srcObject = video.stream;
-                          ref.play().catch((err) => console.error("Video play failed:", err));
-                        }
-                      }}
-                      autoPlay
-                      muted
-                      playsInline
-                    ></video>
-                  </div>
-                ))
-              ) : (
-                <p>No Users Online</p>
-              )}
+
+
+              <div className='conferenceView'>  
+                {videos.length !== 0 ? (
+                  videos.map((video) => (
+                    <div className="conferenceView" key={video.socketId}>
+                      {/* <h2>{video.socketId}</h2> */}
+                      <video
+                        data-socket={video.socketId}
+                        ref={(ref) => {
+                          if (ref && video.stream) {
+                            ref.srcObject = video.stream;
+                            ref.play().catch((err) => console.error("Video play failed:", err));
+                          }
+                        }}
+                        autoPlay
+                        muted
+                        playsInline
+                      ></video>
+                    </div>
+                  ))
+                ) : (
+                  <p>No Users Online</p>
+                )}
+              </div>  
 
             </div>
     }

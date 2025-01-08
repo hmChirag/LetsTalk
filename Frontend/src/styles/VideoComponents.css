@@ -74,3 +74,11 @@
 .meetUserVideo {
   margin-left: 20px;
 }
+
+.conferenceView video {
+  width: 300px; /* Adjust the size of each user's video */
+  height: auto;
+  border-radius: 10px;
+  border: 2px solid white;
+  margin: 10px;
+}
