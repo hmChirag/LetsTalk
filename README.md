@@ -115,3 +115,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ![image](https://github.com/user-attachments/assets/ca6e7e22-3f3e-4ef6-ab62-10ebfd7e2230)
 
+A sample output image of multiple users online chatting and video calling is as below:
+![Screenshot 2025-01-08 174655](https://github.com/user-attachments/assets/7b2c85d9-010c-40bd-bac8-8ede8001069c)
