@@ -2,7 +2,7 @@
 
 ## Overview
 **Let's Talk** is a real-time video call application built using the **MERN stack** (MongoDB, Express.js, React.js, Node.js) and leverages WebRTC for peer-to-peer communication. This application enables seamless video calling capabilities by using WebSockets for signaling, along with STUN servers and ICE candidates for establishing connections across NATs.
-<H3>Access the project here <H3>- <a href="[letstalk-frontend-7df2.onrender.com](https://letstalk-frontend-7df2.onrender.com/)">letstalk-frontend-7df2.onrender.com</a>
+<H3>Access the project here <H3>- <a href="https://letstalk-frontend-7df2.onrender.com">letstalk-frontend-7df2.onrender.com</a>
 
 ## Features
 - **Real-time Video Calls**: Direct peer-to-peer communication using WebRTC.
